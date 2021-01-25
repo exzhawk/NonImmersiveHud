@@ -1,29 +1,22 @@
 package me.exz.nonimmersivehud
 
-import net.minecraftforge.fml.ModLoadingContext
+import me.exz.nonimmersivehud.Reference.MOD_ID
+import me.exz.nonimmersivehud.Reference.LANG_ADAPTER
+import me.exz.nonimmersivehud.Reference.MOD_NAME
+import me.exz.nonimmersivehud.Reference.VERSION
 import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.config.ModConfig
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
-import thedarkcolour.kotlinforforge.forge.MOD_BUS
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
+import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.fml.relauncher.SideOnly
 
-@Mod(NonImmersiveHud.ID)
+@Mod(modid = MOD_ID, name = MOD_NAME, version = VERSION, modLanguageAdapter = LANG_ADAPTER)
 object NonImmersiveHud {
-    const val ID: String = "nonimmersivehud"
-    val LOGGER: Logger = LogManager.getLogger()
 
-    init {
-        MOD_BUS.addListener(::setup)
-        MOD_BUS.addListener(::doClientStuff)
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.spec)
-    }
 
-    private fun setup(event: FMLCommonSetupEvent) {
-    }
-
-    private fun doClientStuff(event: FMLClientSetupEvent) {
+    @Suppress("unused", "UNUSED_PARAMETER")
+    @Mod.EventHandler
+    @SideOnly(Side.CLIENT)
+    fun preInit(event: FMLPreInitializationEvent) {
         WebServer.startServer()
     }
 

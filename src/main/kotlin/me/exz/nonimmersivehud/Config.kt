@@ -1,24 +1,16 @@
+@file:JvmName("Config")
+@file:Config(modid = MOD_ID)
+
 package me.exz.nonimmersivehud
 
-import net.minecraftforge.common.ForgeConfigSpec
+import me.exz.nonimmersivehud.Reference.MOD_ID
+import net.minecraftforge.common.config.Config
 
+@Config.Comment("Webserver listening host")
+@JvmField
+var host = "0.0.0.0"
 
-object Config {
-    @JvmStatic
-    val spec: ForgeConfigSpec
-
-    @JvmStatic
-    val host: ForgeConfigSpec.ConfigValue<String>
-
-    @JvmStatic
-    val port: ForgeConfigSpec.IntValue
-
-    init {
-        val builder = ForgeConfigSpec.Builder()
-        builder.comment("web server settings").push("webserver")
-        host = builder.comment("listening host").define("host", "0.0.0.0")
-        port = builder.comment("listening port").defineInRange("port", 18082, 1, 65535)
-        builder.pop()
-        spec = builder.build()
-    }
-}
+@Config.Comment("Webserver listening port")
+@Config.RangeInt(min = 1, max = 65535)
+@JvmField
+var port = 18082

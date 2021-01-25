@@ -1,6 +1,5 @@
 package me.exz.nonimmersivehud
 
-import me.exz.nonimmersivehud.NonImmersiveHud.LOGGER
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
@@ -14,10 +13,10 @@ import kotlin.concurrent.thread
 
 object WebServer {
     fun startServer() {
-        val host = Config.host.get()
-        val port = Config.port.get()
+        val host = host
+        val port = port
         thread(start = true) {
-            LOGGER.info(String.format("Starting server, listening at %s:%s", host, port))
+            print(String.format("Starting server, listening at %s:%s", host, port))
             val server = Server(InetSocketAddress(host, port))
             val context = ServletContextHandler(ServletContextHandler.SESSIONS)
 
@@ -39,7 +38,7 @@ object WebServer {
 
             server.handler = context
             server.start()
-            LOGGER.info("Started Server")
+            print("Started Server")
             server.join()
         }
     }
