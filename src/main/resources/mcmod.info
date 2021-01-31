@@ -1,0 +1,16 @@
+[
+{
+  "modid": "nonimmersivehud",
+  "name": "Non Immersive HUD",
+  "description": "Make you HUD(Hwyla) not immersive anymore, Access the HUD in a web page.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Epix Zhang"],
+  "credits": "The Forge and FML guys, for making this example",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
