@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Non Immersive Waila</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <link rel="manifest" href="waila.json">
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        #hud-box.waila {
+            box-shadow: 0 8px #100010cc, 0 -8px #100010cc, 8px 0 #100010cc, -8px 0 #100010cc;
+            background: #100010cc;
+            border: solid 8px;
+            border-image-slice: 1;
+            border-image-source: linear-gradient(to bottom, #5000ffcc, #28007fcc);
+            padding: 16px;
+            /*margin: 8px auto;*/
+            transform-origin: top center;
+            flex-shrink: 0;
+            margin: 8px;
+        }
+
+        p {
+            font-size: 64px;
+            margin: 8px;
+            color: #a0a0a0;
+        }
+
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="hud-box" class="waila" v-show="visible">
+    <app-line v-for="line in lines" v-bind:line="line"></app-line>
+    <!--    <p class="line"><span class="white">Grass Block</span></p>-->
+    <!--    <p class="line"><span class="blue italic">Minecraft</span></p>-->
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="common.js"></script>
+<script>
+    const parse = (line) => {
+        switch (typeof line) {
+            case 'string':
+                return parseText(line)
+            case 'object':
+                switch (line.id) {
+                    case 'waila:render_health':
+                        return [{
+                            color: 'white',
+                            style: [],
+                            text: `${line.health.toFixed(1)}/${line.max.toFixed(1)} ❤️`
+                        }]
+                    default:
+                        return []
+                }
+        }
+    }
+    // const testLines = ['§fGrass Block', '§9§oMinecraft']
+    let testLines = (
+        '§l§m§n§oMinecraft Formatting§r\n' +
+        '§00 §11 §22 §33\n' +
+        '§44 §55 §66 §77\n' +
+        '§88 §99 §aa §bb\n' +
+        '§cc §dd §ee §ff\n' +
+        '§rk §kMinecraft\n' +
+        '§rl §lMinecraft\n' +
+        '§rm §mMinecraft\n' +
+        '§rn §nMinecraft\n' +
+        '§ro §oMinecraft\n' +
+        '§rr §rMinecraft'
+    ).split('\n')
+    // let lines = testLines.map(parse);
+
+    let lines = [];
+    console.log(lines)
+    Vue.component('app-line', {
+        props: ['line'],
+        template: `
+            <p>
+                <span v-for="s in line" v-bind:class="s.style.concat([s.color])">
+                    {{s.text}}
+                </span>
+            </p>`
+    })
+    const app = new Vue({
+        el: '#hud-box',
+        data: {
+            lines: lines,
+            visible: false,
+        },
+        updated: function () {
+            this.$nextTick(function () {
+                resizeHudBox();
+            })
+        },
+    })
+    // const socket = new WebSocket(`${location.origin.replace(/^http/, 'ws')}/w`);
+    let url = 'ws://10.0.0.233:18082/w?hud=waila';
+    autoReconnectWebsocket(url, (data) => {
+        const rawLines = JSON.parse(data);
+        if (rawLines === null) {
+            app.visible = false;
+        } else {
+            app.visible = true;
+            app.lines = rawLines.map(parse);
+        }
+        // setTimeout(() => resizeHudBox(), 0);
+    })
+    // keepScreenOnHack();
+</script>
+</body>
+</html>

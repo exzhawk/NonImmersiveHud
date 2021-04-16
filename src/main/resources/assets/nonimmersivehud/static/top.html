@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Non Immersive TOP</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <link rel="manifest" href="top.json">
+    <style>
+        body {
+            padding: 8px;
+        }
+
+        #hud-box.top {
+            background: #00669955;
+            border: solid 8px #999999ff;
+            padding: 16px;
+            transform-origin: top left;
+            /*margin:8px;*/
+        }
+
+        p {
+            font-size: 64px;
+            margin: 8px;
+            color: #ffffff;
+        }
+
+        .vertical {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .horizontal {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="hud-box" class="top" v-show="visible">
+    <component v-bind:is="'Element'+element.type" v-bind:element="element"></component>
+</div>
+<script src="vue.js"></script>
+<script src="common.js"></script>
+<script>
+
+    let testElement = {
+        "type": "Vertical",
+        "children": [{
+            "type": "Horizontal",
+            "children": [{"type": "Entity"}, {
+                "type": "Vertical",
+                "children": [{"type": "Text", "text": "§fSheep§r"}, {"type": "Text", "text": "§9§oMinecraft"}]
+            }]
+        }, {"type": "Progress", "current": 5, "max": 8}]
+    };
+    testElement = {
+        "type": "Vertical",
+        "children": [{
+            "type": "Horizontal",
+            "children": [{"type": "ItemStack"}, {
+                "type": "Vertical",
+                "children": [{"type": "ItemLabel", "text": "Grass Block"}, {"type": "Text", "text": "§9§oMinecraft"}]
+            }]
+        }, {
+            "type": "Horizontal",
+            "children": [{
+                "type": "Icon",
+                "icon": "theoneprobe:textures/gui/icons.png",
+                "u": 0,
+                "v": 16,
+                "w": 13,
+                "h": 13,
+                "tw": 32,
+                "th": 32
+            }, {"type": "Text", "text": "§aShovel"}]
+        }]
+    };
+    console.log(testElement);
+    let ARGB2RGBA = (argb) => `#${argb.substring(2)}${argb.substring(0, 2)}`
+    Vue.component('ElementVertical', {
+        props: ['element'],
+        computed: {
+            style: function () {
+                return this.element.borderColor ? {border: `solid 6px ${ARGB2RGBA(this.element.borderColor)}`} : {}
+            }
+        },
+        template: `<div class="vertical" v-bind:style="style"><component v-for="child in element.children" v-bind:is="'Element'+child.type" v-bind:element="child"></component></div>`
+        // template:`<div>{{element}}</div>`
+    });
+    Vue.component('ElementHorizontal', {
+        props: ['element'],
+        template: `<div class="horizontal"><component v-for="child in element.children" v-bind:is="'Element'+child.type" v-bind:element="child"></component></div>`
+    });
+    Vue.component('ElementEntity', {
+        props: ['element'],
+        template: `<p><span class="gray">[E]</span></p>`
+    });
+    Vue.component('ElementItemStack', {
+        props: ['element'],
+        template: `<p><span class="gray">[IS]</span></p>`
+    });
+    Vue.component('ElementIcon', {
+        props: ['element'],
+        computed: {
+            style: function () {
+                let e = this.element;
+                return {
+                    // backgroundImage: `url(resource/${this.element.icon})`,
+                    backgroundImage: `url(http://10.0.0.233:18082/resource/${this.element.icon})`,
+                    backgroundSize: `${e.tw / e.w * 100}% ${e.th / e.h * 100}%`,
+                    backgroundPosition: `${e.u / (e.tw - e.w) * 100}% ${e.v / (e.th - e.h) * 100}%`,
+                    width: `${e.w * 6}px`,
+                    height: `${e.h * 6}px`,
+                    imageRendering: 'pixelated',
+                }
+            }
+        },
+        template: `<p v-bind:style="style"></p>`
+    });
+    Vue.component('ColorText', {
+        props: ['text'],
+        computed: {
+            line: function () {
+                return parseText(this.text, 'white');
+            }
+        },
+        template: `
+            <p>
+                <span v-for="s in line" v-bind:class="s.style.concat([s.color])">
+                    {{s.text}}
+                </span>
+            </p> `
+    });
+    Vue.component('ElementText', {
+        props: ['element'],
+        template: `<ColorText v-bind:text="element.text"></ColorText>`
+    });
+    Vue.component('ElementItemLabel', {
+        props: ['element'],
+        template: `<ColorText v-bind:text="element.text"></ColorText>`
+    });
+    Vue.component('ElementProgress', {
+        props: ['element'],
+        computed: {
+            style: function () {
+                let pStyle = this.element.style;
+                return {
+                    border: '6px solid',
+                    borderColor: ARGB2RGBA(pStyle.borderColor),
+                    backgroundColor: ARGB2RGBA(pStyle.backgroundColor),
+                    width: `${pStyle.width * 6}px`
+                }
+            },
+            innerStyle: function () {
+                let pStyle = this.element.style;
+                return {
+                    backgroundImage: `repeating-linear-gradient(
+                    to right,
+                    ${ARGB2RGBA(pStyle.filledColor)},
+                    ${ARGB2RGBA(pStyle.filledColor)} 6px,
+                    ${ARGB2RGBA(pStyle.alternatefilledColor)} 6px,
+                    ${ARGB2RGBA(pStyle.alternatefilledColor)} 12px
+                    )`,
+                    width: `${this.element.current / this.element.max * 100}%`,
+                    display: 'inline-block',
+                    whiteSpace: 'nowrap',
+                }
+            }
+        },
+        template: `
+            <div>
+                <p v-if="element.style.lifeBar">{{element.current}}/{{element.max}} ❤️</p>
+                <p v-else-if="element.style.armorBar">{{element.current}} 👕</p>
+                <p v-else v-bind:style="style">
+                    <span v-bind:style="innerStyle" class="white">
+                        {{element.style.prefix}} {{element.current}}/{{element.max}} {{element.style.suffix}}
+                    </span>
+                </p>
+            </div>`
+    });
+
+    const app = new Vue({
+        el: '#hud-box',
+        data: {
+            element: testElement,
+            visible: false,
+        },
+        updated: function () {
+            this.$nextTick(function () {
+                resizeHudBox();
+            })
+        },
+    })
+    // const socket = new WebSocket(`${location.origin.replace(/^http/, 'ws')}/w?hud=top`);
+    let url = 'ws://10.0.0.233:18082/w?hud=top'
+    autoReconnectWebsocket(url, (data) => {
+        const element = JSON.parse(data);
+        if (element === null) {
+            app.visible = false;
+        } else {
+            app.visible = true;
+            app.element = element;
+        }
+    });
+
+    // keepScreenOnHack();
+</script>
+</body>
+</html>

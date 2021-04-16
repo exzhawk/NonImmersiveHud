@@ -8,12 +8,19 @@ import org.eclipse.jetty.websocket.api.WebSocketAdapter
 class WebSocket : WebSocketAdapter() {
     companion object {
         var nbtWebSocketClients = mutableListOf<WebSocket>()
-        fun broadcast(string: String) {
-            println(string)
-            for (nbtWebSocketClient in nbtWebSocketClients) {
-                if (nbtWebSocketClient.session.isOpen) {
-                    nbtWebSocketClient.sendWebSocketText(string)
+        var lastString = mutableMapOf<String, String>()
+        fun broadcast(string: String, hud: String) {
+            lastString[hud] = string
+            try {
+                for (nbtWebSocketClient in nbtWebSocketClients) {
+                    if (nbtWebSocketClient.session?.isOpen == true &&
+                        nbtWebSocketClient.session?.upgradeRequest?.parameterMap?.get("hud")?.get(0) == hud
+                    ) {
+                        nbtWebSocketClient.sendWebSocketText(string)
+                    }
                 }
+            } catch (e: NullPointerException) {
+                println("wtf???")
             }
         }
     }
@@ -26,6 +33,10 @@ class WebSocket : WebSocketAdapter() {
     override fun onWebSocketConnect(sess: Session?) {
         super.onWebSocketConnect(sess)
         nbtWebSocketClients.add(this)
+        val hud = sess?.upgradeRequest?.parameterMap?.get("hud")?.get(0)
+        if (hud != null) {
+            this.sendWebSocketText(lastString.getOrDefault(hud, "null"))
+        }
     }
 
     override fun onWebSocketError(cause: Throwable?) {

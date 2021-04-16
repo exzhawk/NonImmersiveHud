@@ -1,0 +1,18 @@
+{
+  "short_name": "Waila",
+  "name": "Non Immersive Waila",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "waila.html",
+  "display": "standalone"
+}

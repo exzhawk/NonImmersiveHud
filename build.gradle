@@ -32,6 +32,11 @@ repositories {
         url "http://maven.shadowfacts.net/"
     }
     maven {url "http://maven.tehnut.info/"}
+    maven { // TOP
+        name 'tterrag maven'
+        url "https://maven.tterrag.com/"
+    }
+
 }
 
 minecraft {
@@ -53,7 +58,8 @@ configurations {
 }
 dependencies {
     deobfCompile("mcp.mobius.waila:Hwyla:${hwyla_version}")
-    compile group: "net.shadowfacts", name: "Forgelin", version: "1.8.4"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}"
+//    compile group: "net.shadowfacts", name: "Forgelin", version: "1.8.4"
     shadow "org.jetbrains.kotlin:kotlin-stdlib"
     shadow "org.jetbrains.kotlin:kotlin-reflect"
     shadow "org.eclipse.jetty:jetty-server:${jetty_version}"

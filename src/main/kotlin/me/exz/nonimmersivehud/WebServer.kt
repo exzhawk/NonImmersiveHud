@@ -36,6 +36,9 @@ object WebServer {
             })
             context.addServlet(wsHolder, "/w")
 
+            val resourceLocationHolder = ServletHolder("resourceLocation", ResourceLocationServlet::class.java)
+            context.addServlet(resourceLocationHolder, "/resource/*")
+
             server.handler = context
             server.start()
             print("Started Server")
