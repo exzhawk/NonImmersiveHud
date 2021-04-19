@@ -85,13 +85,20 @@ class TOPHandler {
 
         }
 
+        @JvmStatic
+        private var lastJoinedWorldHashCode: Int = 0
+
+        @Suppress("unused")
         @SubscribeEvent
         @JvmStatic
         @SideOnly(Side.CLIENT)
         fun onEntityJoinWorld(event: EntityJoinWorldEvent) {
             val entity = event.entity
             if (entity is EntityPlayerSP) {
-                Utils.sendUrlToChat(entity, hud)
+                if (event.world.hashCode() != lastJoinedWorldHashCode) {
+                    Utils.sendUrlToChat(entity, hud)
+                    lastJoinedWorldHashCode = event.world.hashCode()
+                }
             }
         }
 

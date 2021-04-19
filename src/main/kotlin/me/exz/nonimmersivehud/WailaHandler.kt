@@ -7,17 +7,12 @@ import mcp.mobius.waila.api.event.WailaTooltipEvent
 import mcp.mobius.waila.overlay.RayTracing
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.util.math.RayTraceResult
-import net.minecraft.util.text.TextComponentString
-import net.minecraft.util.text.TextFormatting
-import net.minecraft.util.text.event.ClickEvent
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
-import java.net.Inet4Address
-import java.net.NetworkInterface
 
 
 //@EventBusSubscriber
@@ -84,13 +79,20 @@ class WailaHandler {
             }
         }
 
+        @JvmStatic
+        private var lastJoinedWorldHashCode: Int = 0
+
+        @Suppress("unused")
         @SubscribeEvent
         @JvmStatic
         @SideOnly(Side.CLIENT)
         fun onEntityJoinWorld(event: EntityJoinWorldEvent) {
             val entity = event.entity
             if (entity is EntityPlayerSP) {
-                Utils.sendUrlToChat(entity, hud)
+                if (event.world.hashCode() != lastJoinedWorldHashCode) {
+                    Utils.sendUrlToChat(entity, hud)
+                    lastJoinedWorldHashCode = event.world.hashCode()
+                }
             }
         }
 
