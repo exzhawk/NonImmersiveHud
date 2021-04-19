@@ -164,7 +164,7 @@
                     ${ARGB2RGBA(pStyle.alternatefilledColor)} 6px,
                     ${ARGB2RGBA(pStyle.alternatefilledColor)} 12px
                     )`,
-                    width: `${this.element.current / this.element.max * 100}%`,
+                    width: this.element.current ? `${this.element.current / this.element.max * 100}%` : '0',
                     display: 'inline-block',
                     whiteSpace: 'nowrap',
                 }
@@ -178,6 +178,44 @@
                     <span v-bind:style="innerStyle" class="white">
                         {{element.style.prefix}} {{element.current}}/{{element.max}} {{element.style.suffix}}
                     </span>
+                </p>
+            </div>`
+    });
+    Vue.component('ElementTankGauge', {
+        props: ['element'],
+        computed: {
+            innerStyle: function () {
+                return {
+                    backgroundImage: `repeating-linear-gradient(
+                    to right,
+                    ${ARGB2RGBA(this.element.color1)},
+                    ${ARGB2RGBA(this.element.color1)} 6px,
+                    ${ARGB2RGBA(this.element.color2)} 6px,
+                    ${ARGB2RGBA(this.element.color2)} 12px
+                    )`,
+                    width: this.element.amount ? `${this.element.amount / this.element.capacity * 100}%` : '0',
+                    display: 'inline-block',
+                    whiteSpace: 'nowrap',
+                }
+            },
+            fluidNameStyle: function () {
+                return {
+                    color: `${ARGB2RGBA(this.element.color1)}`,
+                    float: 'right',
+                }
+
+            }
+        },
+        template: `
+            <div>
+                <p v-bind:style="{ border: '6px solid grey', width: '600px'}">
+                    <span v-bind:style="innerStyle" class="white">
+                        {{element.amount}}/{{element.capacity}} {{element.suffix}}
+                    </span>
+                </p>
+                <p v-bind:style="{ fontSize: '32px' }">
+                    <span>{{element.tankName}}</span>
+                    <span v-bind:style="fluidNameStyle">{{element.fluidName}}</span>
                 </p>
             </div>`
     });

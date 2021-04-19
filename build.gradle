@@ -36,6 +36,9 @@ repositories {
         name 'tterrag maven'
         url "https://maven.tterrag.com/"
     }
+    maven {
+        url "https://www.cursemaven.com"
+    }
 
 }
 
@@ -58,7 +61,8 @@ configurations {
 }
 dependencies {
     deobfCompile("mcp.mobius.waila:Hwyla:${hwyla_version}")
-    deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:${top_version}"
+    deobfCompile("mcjty.theoneprobe:TheOneProbe-1.12:${top_version}")
+    compile("curse.maven:topaddons-247111:2887479")
 //    compile group: "net.shadowfacts", name: "Forgelin", version: "1.8.4"
     shadow "org.jetbrains.kotlin:kotlin-stdlib"
     shadow "org.jetbrains.kotlin:kotlin-reflect"

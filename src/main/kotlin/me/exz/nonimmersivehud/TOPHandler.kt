@@ -15,7 +15,7 @@ import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.RayTraceResult
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
-import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.relauncher.Side
@@ -38,6 +38,7 @@ class TOPHandler {
         val gson = GsonBuilder().registerTypeHierarchyAdapter(IElement::class.java, ElementSerializer()).create()
         val stylifyStringMethod = getStaticMethod(ElementTextRender::class, "stylifyString", String::class.java)
         var lastJson = ""
+        val isTOPAddonLoaded = Loader.isModLoaded("topaddons")
 
         const val hud = "top"
 
@@ -104,7 +105,6 @@ class TOPHandler {
                     element.addProperty("type", "Text")
                     val text = getField(src, "text")
                     element.addProperty("text", stylifyStringMethod(text) as String)
-                    return element
                 }
                 is ElementItemStack -> {
                     element.addProperty("type", "ItemStack")
@@ -172,6 +172,12 @@ class TOPHandler {
                     val itemStack = getField(src, "itemStack") as ItemStack
                     val label = itemStack.displayName
                     element.addProperty("text", stylifyStringMethod(label) as String)
+                }
+                else -> {
+                    if (isTOPAddonLoaded) {
+                        TOPAddonHandler.updateElementJson(src, element)
+                    }
+
                 }
             }
             return element
