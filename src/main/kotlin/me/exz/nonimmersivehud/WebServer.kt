@@ -1,13 +1,14 @@
 package me.exz.nonimmersivehud
 
+import org.eclipse.jetty.server.Connector
 import org.eclipse.jetty.server.Server
+import org.eclipse.jetty.server.ServerConnector
 import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
 import org.eclipse.jetty.servlet.ServletHolder
 import org.eclipse.jetty.util.resource.Resource
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory
-import java.net.InetSocketAddress
 import kotlin.concurrent.thread
 
 
@@ -17,7 +18,12 @@ object WebServer {
         val port = port
         thread(start = true) {
             print(String.format("Starting server, listening at %s:%s", host, port))
-            val server = Server(InetSocketAddress(host, port))
+            val server = Server()
+            val connector = ServerConnector(server)
+            connector.host = host
+            connector.port = port
+            server.connectors = arrayOf<Connector>(connector)
+
             val context = ServletContextHandler(ServletContextHandler.SESSIONS)
 
             context.contextPath = "/"
