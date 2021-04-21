@@ -99,8 +99,8 @@
             })
         },
     })
-    // const socket = new WebSocket(`${location.origin.replace(/^http/, 'ws')}/w`);
-    let url = 'ws://10.0.0.233:18082/w?hud=waila';
+    let url = `${location.origin.replace(/^http/, 'ws')}/w?hud=waila`;
+    // let url = 'ws://10.0.0.233:18082/w?hud=waila';
     autoReconnectWebsocket(url, (data) => {
         const rawLines = JSON.parse(data);
         if (rawLines === null) {

@@ -108,8 +108,8 @@
             style: function () {
                 let e = this.element;
                 return {
-                    // backgroundImage: `url(resource/${this.element.icon})`,
-                    backgroundImage: `url(http://10.0.0.233:18082/resource/${this.element.icon})`,
+                    backgroundImage: `url(resource/${this.element.icon})`,
+                    // backgroundImage: `url(http://10.0.0.233:18082/resource/${this.element.icon})`,
                     backgroundSize: `${e.tw / e.w * 100}% ${e.th / e.h * 100}%`,
                     backgroundPosition: `${e.u / (e.tw - e.w) * 100}% ${e.v / (e.th - e.h) * 100}%`,
                     width: `${e.w * 6}px`,
@@ -232,8 +232,9 @@
             })
         },
     })
-    // const socket = new WebSocket(`${location.origin.replace(/^http/, 'ws')}/w?hud=top`);
-    let url = 'ws://10.0.0.233:18082/w?hud=top'
+    let url = `${location.origin.replace(/^http/, 'ws')}/w?hud=top`;
+    // let url = 'ws://10.0.0.233:18082/w?hud=top'
+
     autoReconnectWebsocket(url, (data) => {
         const element = JSON.parse(data);
         if (element === null) {
