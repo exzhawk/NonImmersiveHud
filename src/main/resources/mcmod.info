@@ -2,7 +2,7 @@
 {
   "modid": "nonimmersivehud",
   "name": "Non Immersive HUD",
-  "description": "Make you HUD(Hwyla/The One Probe) not immersive anymore. Access the HUD in a web page.",
+  "description": "Make you HUD(Hwyla/The One Probe) not immersive anymore. Access the HUD on a web page.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",

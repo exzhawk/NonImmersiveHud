@@ -1,1 +1,1 @@
-Make you HUD(Hwyla) not immersive anymore, Access the HUD in a web page.
+Make you HUD(Hwyla) not immersive anymore, Access the HUD on a web page.
