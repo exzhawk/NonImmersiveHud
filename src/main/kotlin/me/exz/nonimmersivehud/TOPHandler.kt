@@ -8,6 +8,8 @@ import mcjty.theoneprobe.apiimpl.ProbeInfo
 import mcjty.theoneprobe.apiimpl.client.ElementTextRender
 import mcjty.theoneprobe.apiimpl.elements.*
 import mcjty.theoneprobe.rendering.OverlayRenderer
+import me.exz.nonimmersivehud.NonImmersiveHud.logger
+import me.exz.nonimmersivehud.WebServer.serverStartFailed
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.item.ItemStack
@@ -29,7 +31,7 @@ import kotlin.reflect.KClass
 class TOPHandler {
     companion object {
         init {
-            println("TOPHandler init")
+            logger.info("TOPHandler init")
         }
 
 //        val lastPair = ReflectionHelper.findField(OverlayRenderer::class.java, "lastPair")
@@ -96,8 +98,12 @@ class TOPHandler {
             val entity = event.entity
             if (entity is EntityPlayerSP) {
                 if (event.world.hashCode() != lastJoinedWorldHashCode) {
-                    Utils.sendUrlToChat(entity, hud)
                     lastJoinedWorldHashCode = event.world.hashCode()
+                    if (serverStartFailed) {
+                        Utils.sendFailedToChat(entity)
+                    } else {
+                        Utils.sendUrlToChat(entity, hud)
+                    }
                 }
             }
         }

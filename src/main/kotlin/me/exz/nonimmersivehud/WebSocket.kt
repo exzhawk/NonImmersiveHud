@@ -1,6 +1,7 @@
 package me.exz.nonimmersivehud
 
 
+import me.exz.nonimmersivehud.NonImmersiveHud.logger
 import org.eclipse.jetty.websocket.api.Session
 import org.eclipse.jetty.websocket.api.WebSocketAdapter
 
@@ -20,7 +21,7 @@ class WebSocket : WebSocketAdapter() {
                     }
                 }
             } catch (e: NullPointerException) {
-                println("wtf???")
+                logger.error("wtf???")
             }
         }
     }
@@ -41,13 +42,13 @@ class WebSocket : WebSocketAdapter() {
 
     override fun onWebSocketError(cause: Throwable?) {
         super.onWebSocketError(cause)
-        println("websocket error")
+        logger.info("websocket error")
     }
 
     override fun onWebSocketText(string: String) {
-        if (isConnected) {
-            println("Received message $string")
-        }
+//        if (isConnected) {
+//            println("Received message $string")
+//        }
     }
 
     fun sendWebSocketText(string: String) {

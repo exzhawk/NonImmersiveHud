@@ -39,5 +39,8 @@ class Utils {
             }
             entity.sendMessage(parent)
         }
+        fun sendFailedToChat(entity:EntityPlayerSP){
+            entity.sendMessage(TextComponentString("Failed to start server! Check if port is occupied."))
+        }
     }
 }

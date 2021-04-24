@@ -1,5 +1,6 @@
 package me.exz.nonimmersivehud
 
+import me.exz.nonimmersivehud.NonImmersiveHud.logger
 import org.eclipse.jetty.server.Connector
 import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.server.ServerConnector
@@ -9,15 +10,17 @@ import org.eclipse.jetty.servlet.ServletHolder
 import org.eclipse.jetty.util.resource.Resource
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory
+import java.io.IOException
 import kotlin.concurrent.thread
 
 
 object WebServer {
+    var serverStartFailed = false
     fun startServer() {
         val host = host
         val port = port
         thread(start = true) {
-            print(String.format("Starting server, listening at %s:%s", host, port))
+            logger.info(String.format("Starting server, listening at %s:%s", host, port))
             val server = Server()
             val connector = ServerConnector(server)
             connector.host = host
@@ -46,9 +49,14 @@ object WebServer {
             context.addServlet(resourceLocationHolder, "/resource/*")
 
             server.handler = context
-            server.start()
-            print("Started Server")
-            server.join()
+            try {
+                server.start()
+                logger.info("Started Server")
+                server.join()
+            } catch (e: IOException) {
+                logger.fatal("Failed to start server! Check if port is occupied.")
+                serverStartFailed = true
+            }
         }
     }
 }

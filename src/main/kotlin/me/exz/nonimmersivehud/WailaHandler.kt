@@ -5,6 +5,8 @@ import mcp.mobius.waila.api.SpecialChars
 import mcp.mobius.waila.api.SpecialChars.patternRender
 import mcp.mobius.waila.api.event.WailaTooltipEvent
 import mcp.mobius.waila.overlay.RayTracing
+import me.exz.nonimmersivehud.NonImmersiveHud.logger
+import me.exz.nonimmersivehud.WebServer.serverStartFailed
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.util.math.RayTraceResult
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
@@ -19,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly
 class WailaHandler {
     companion object {
         init {
-            println("WailaHandler init")
+            logger.info("WailaHandler init")
         }
 
         @JvmStatic
@@ -74,7 +76,6 @@ class WailaHandler {
                 if (tooltipJson != lastTooltipJson) {
                     WebSocket.broadcast(tooltipJson, hud)
                     lastTooltipJson = tooltipJson
-//                    println(tooltipJson)
                 }
             }
         }
@@ -90,8 +91,12 @@ class WailaHandler {
             val entity = event.entity
             if (entity is EntityPlayerSP) {
                 if (event.world.hashCode() != lastJoinedWorldHashCode) {
-                    Utils.sendUrlToChat(entity, hud)
                     lastJoinedWorldHashCode = event.world.hashCode()
+                    if (serverStartFailed) {
+                        Utils.sendFailedToChat(entity)
+                    } else {
+                        Utils.sendUrlToChat(entity, TOPHandler.hud)
+                    }
                 }
             }
         }

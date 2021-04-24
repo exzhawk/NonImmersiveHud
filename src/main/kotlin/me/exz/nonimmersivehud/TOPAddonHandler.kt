@@ -3,12 +3,13 @@ package me.exz.nonimmersivehud
 import com.google.gson.JsonObject
 import io.github.drmanganese.topaddons.elements.ElementTankGauge
 import mcjty.theoneprobe.api.IElement
+import me.exz.nonimmersivehud.NonImmersiveHud.logger
 
 
 class TOPAddonHandler {
     companion object {
         init {
-            println("TOPAddonHandler init")
+            logger.info("TOPAddonHandler init")
         }
 
         fun updateElementJson(src: IElement, element: JsonObject) {
