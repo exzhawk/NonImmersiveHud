@@ -95,7 +95,7 @@ class WailaHandler {
                     if (serverStartFailed) {
                         Utils.sendFailedToChat(entity)
                     } else {
-                        Utils.sendUrlToChat(entity, TOPHandler.hud)
+                        Utils.sendUrlToChat(entity, hud)
                     }
                 }
             }
