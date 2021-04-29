@@ -14,3 +14,7 @@ var host = "0.0.0.0"
 @Config.RangeInt(min = 1, max = 65535)
 @JvmField
 var port = 18082
+
+@Config.Comment("Disable in-game HUD")
+@JvmField
+var disableInGameHUD = true

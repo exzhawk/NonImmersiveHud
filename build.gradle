@@ -103,3 +103,10 @@ processResources {
         exclude 'mcmod.info'
     }
 }
+
+jar {
+    manifest {
+        attributes "FMLCorePlugin": "me.exz.nonimmersivehud.core.Plugin"
+        attributes "FMLCorePluginContainsFMLMod": true
+    }
+}
